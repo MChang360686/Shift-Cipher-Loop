@@ -1,0 +1,93 @@
+.data
+#different words to use
+arr: .word 1, 2, 3, 4, 5, 6, 7, 8	
+arrtwo: .word 3, 24, 6, 10, 8, 9, 4, 6
+hello: .word 8, 5, 12, 12, 15, 0, 0, 0
+goodbye: .word 7, 15, 15, 4, 2, 25, 5, 0
+
+#Can't use System.out.println() like in java
+#stop denotes the end of one iteration of shift cipher
+#spacer denotes the different values
+#note that it may be useful to set registers to decimal 
+
+stop: .asciiz "stop"	
+spacer: .asciiz "."
+.text
+
+main:	la $s0, hello	    #word that is to be encoded is defined here
+	la $s3, stop	        #don't touch this
+	la $s4, spacer	      #or this, they make it easier to read on console
+	li $s1, 1	            #starting value of counter in the "for" loop
+	li $s2, 10	          #end value of "for" loop
+	j loop		            #jump to loop
+
+loop:	beq $s1, $s2, exit	#if $s1==$s2, go to exit
+	    lw $t0, 0($s0)		    #otherwise start loading items
+	    lw $t1, 4($s0)
+	    lw $t2, 8($s0)
+	    lw $t3, 12($s0)
+	    lw $t4, 16($s0)
+	    lw $t5, 20($s0)
+	    lw $t6, 24($s0)
+	    lw $t7, 28($s0)		
+	    add $t0, $t0, $s1	     #add the current iteration of loop as cipher shift amount
+	    add $t1, $t1, $s1
+	    add $t2, $t2, $s1
+	    add $t3, $t3, $s1
+	    add $t4, $t4, $s1
+	    add $t5, $t5, $s1
+	    add $t6, $t6, $s1
+	    add $t7, $t7, $s1
+    	addi $s1, $s1, 1	    #increase counter by 1
+	    li $v0, 1		          #let system know to print an integer
+	    move $a0, $t0		      #move integer from temp register to $a0 register for printing
+	    syscall			          #syscall prints what is in $a0
+	    li $v0, 4		          #print an ascii
+	    move $a0, $s4		      #move spacer to $a0 this time
+	    syscall			          #prints spacer to console
+	    li $v0, 1
+	    move $a0, $t1
+	    syscall
+	    li $v0, 4
+	    move $a0, $s4
+	    syscall
+	    li $v0, 1
+    	move $a0, $t2
+	    syscall
+	    li $v0, 4
+	    move $a0, $s4
+    	syscall
+	    li $v0, 1
+	    move $a0, $t3
+	    syscall
+	    li $v0, 4
+	    move $a0, $s4
+	    syscall
+	    li $v0, 1
+	    move $a0, $t4
+	    syscall
+	    li $v0, 4
+	    move $a0, $s4
+	    syscall
+	    li $v0, 1
+	    move $a0, $t5
+	    syscall
+	    li $v0, 4
+	    move $a0, $s4
+	    syscall
+	    li $v0, 1
+	    move $a0, $t6
+	    syscall
+	    li $v0, 4
+	    move $a0, $s4
+	    syscall
+	    li $v0, 1
+	    move $a0, $t7
+	    syscall
+	    li $v0, 4		    #print another ascii
+	    move $a0, $s3		#move stop to $a0
+	    syscall			    #print stop
+	    j loop			    #jump back to loop, check branch statement again
+
+exit:	li $v0, 10		#for loop is finished, time to exit
+	    syscall
